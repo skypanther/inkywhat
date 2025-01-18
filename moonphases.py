@@ -20,4 +20,5 @@ def get_moon_phase_image(percent):
     elif percent > 0.80 and percent <= 0.95:
         img_path = "images/moonphases/wi-moon-waning-crescent.png"
     img = Image.open(img_path, "r")
+    # print(percent, img_path)
     return img

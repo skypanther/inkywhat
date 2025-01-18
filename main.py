@@ -1,21 +1,4 @@
-"""
-Weather app for the Inky wHAT e-ink display.
-
-Rough plan:
-
-* Once per day (1:00 am)
-    * fetch sunrise,sunset,moonphase from Visual Crossing
-    * save JSON / data
-* Once per hour
-    * fetch next N days forecast from Weather.gov
-    * save JSON / data
-* Every N minutes
-    * Fetch current conditions from Ambient Weather
-    * save JSON / data
-* Every N minutes
-    * read saved data
-    * update display
-"""
+# Weather app for the Inky wHAT e-ink display.
 
 import time
 import requests
@@ -28,7 +11,7 @@ from PIL import Image, ImageFont, ImageDraw
 from moonphases import get_moon_phase_image
 from url_helper import UrlHelper
 
-MOCK = True
+MOCK = False
 
 
 class InkyWeather:
@@ -74,7 +57,7 @@ class InkyWeather:
             self.forecast = [
                 {},
                 {
-                    "temperature": 84,
+                    "temperature": 84.5,
                     "probabilityOfPrecipitation": {"value": 50},
                     "windSpeed": "8 to 12 mph",
                 },
@@ -104,10 +87,10 @@ class InkyWeather:
         self.current_conditions_last_fetched = datetime.now()
         if MOCK is True:
             self.current_conditions = {
-                "tempf": 80,
+                "tempf": 80.5,
                 "windspeedmph": 10,
                 "windgustmph": 15,
-                "dailyrainin": 0.5,
+                "dailyrainin": 0.005,
             }
             return
         try:
@@ -130,10 +113,10 @@ class InkyWeather:
     def parse_ambient_data(self, data):
         """Parse the API response and return select values"""
         return {
-            "temp": (data["tempf"], 90, 50),
-            "windspeed": (data["windspeedmph"], 90, 220),
-            "gust": (data["windgustmph"], 90, 245),
-            "rain": (data["dailyrainin"], 90, 145),
+            "temp": (data["tempf"], 80, 50),
+            "windspeed": (round(data["windspeedmph"], 1), 80, 220),
+            "gust": (round(data["windgustmph"], 1), 80, 245),
+            "rain": (data["dailyrainin"], 80, 145),
         }
 
     def parse_astronomical_data(self, data):
@@ -158,12 +141,12 @@ class InkyWeather:
         astro_data = self.parse_astronomical_data(self.astronomical_data)
         forecast_data = self.parse_nws_data(self.forecast[1])
         font16 = ImageFont.truetype("font/inisans.otf", 16)
-        font32 = ImageFont.truetype("font/inisans.otf", 32)
+        font30 = ImageFont.truetype("font/inisans.otf", 30)
         font48 = ImageFont.truetype("font/inisans.otf", 48)
         black = (0, 0, 0, 255)
         red = (255, 0, 0, 255)
 
-        with Image.open("images/weather_background2.png") as im:
+        with Image.open("images/weather_background.png") as im:
             im1 = im.convert("RGBA")
             txt = Image.new("RGBA", im.size, (255, 255, 255, 0))
             draw = ImageDraw.Draw(txt)
@@ -172,14 +155,14 @@ class InkyWeather:
                 temp_color = red
             draw.text(
                 (current_conditions["temp"][1], current_conditions["temp"][2]),
-                f'{current_conditions["temp"][0]} F',
+                f'{current_conditions["temp"][0]}',
                 font=font48,
                 fill=temp_color,
             )
             draw.text(
                 (current_conditions["rain"][1], current_conditions["rain"][2]),
                 f'{current_conditions["rain"][0]} in',
-                font=font32,
+                font=font30,
                 fill=(0, 0, 0, 255),
             )
             draw.text(
@@ -230,7 +213,7 @@ class InkyWeather:
                     forecast_data["high"][1],
                     forecast_data["high"][2],
                 ),
-                f'{forecast_data["high"][0]} F',
+                f'{forecast_data["high"][0]}',
                 font=font16,
                 fill=high_color,
             )
@@ -254,9 +237,10 @@ class InkyWeather:
             )
 
             out = Image.alpha_composite(im1, txt)
+            # if MOCK is True:
             out.show()
-        # inky_display.set_image(img)
-        # inky_display.show()
+            # inky_display.set_image(out)
+            # inky_display.show()
 
     def run(self):
         """Loop logic:

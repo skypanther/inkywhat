@@ -1,4 +1,4 @@
-# Development and other notes
+# API sample payloads
 
 ## Visual Crossing API sample response
 
