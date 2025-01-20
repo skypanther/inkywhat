@@ -5,7 +5,7 @@ import requests
 from config import WeatherConfig
 from datetime import datetime
 
-# from inky.auto import auto
+from inky.auto import auto
 from PIL import Image, ImageFont, ImageDraw
 
 from moonphases import get_moon_phase_image
@@ -27,8 +27,8 @@ class InkyWeather:
         self.astronomical_data_last_checked = 0
         self.forecast_last_checked = 0
         self.current_conditions_last_fetched = 0
-        # self.inky_display = auto()
-        # self.inky_display.set_border(inky_display.WHITE)
+        self.inky_display = auto()
+        self.inky_display.set_border(self.inky_display.WHITE)
 
     def fetch_sun_moon_data(self):
         """Retrieves sunrise, sunset, moon phase, etc from the Visual Crossing
@@ -143,8 +143,8 @@ class InkyWeather:
         font16 = ImageFont.truetype("font/inisans.otf", 16)
         font30 = ImageFont.truetype("font/inisans.otf", 30)
         font48 = ImageFont.truetype("font/inisans.otf", 48)
-        black = (0, 0, 0, 255)
-        red = (255, 0, 0, 255)
+        black = self.inky_display.BLACK
+        red = self.inky_display.RED
 
         with Image.open("images/weather_background.png") as im:
             im1 = im.convert("RGBA")
@@ -163,7 +163,7 @@ class InkyWeather:
                 (current_conditions["rain"][1], current_conditions["rain"][2]),
                 f'{current_conditions["rain"][0]} in',
                 font=font30,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
             draw.text(
                 (
@@ -172,7 +172,7 @@ class InkyWeather:
                 ),
                 f'{current_conditions["windspeed"][0]} mph',
                 font=font16,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
             draw.text(
                 (
@@ -181,7 +181,7 @@ class InkyWeather:
                 ),
                 f'{current_conditions["gust"][0]} mph gust',
                 font=font16,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
             draw.text(
                 (
@@ -190,7 +190,7 @@ class InkyWeather:
                 ),
                 f'{astro_data["sunrise"][0]}',
                 font=font16,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
             draw.text(
                 (
@@ -199,15 +199,15 @@ class InkyWeather:
                 ),
                 f'{astro_data["sunset"][0]}',
                 font=font16,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
             # moonphase is an image rather than text
             phase_img = get_moon_phase_image(astro_data["moonphase"][0])
             offset = (astro_data["moonphase"][1], astro_data["moonphase"][2])
             im1.paste(phase_img, offset)
-            high_color = (0, 0, 0, 255)
+            high_color = self.inky_display.BLACK
             if forecast_data["high"][0] > 79:
-                high_color = (255, 0, 0, 255)
+                high_color = self.inky_display.RED
             draw.text(
                 (
                     forecast_data["high"][1],
@@ -224,7 +224,7 @@ class InkyWeather:
                 ),
                 f'{forecast_data["wind"][0]}',
                 font=font16,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
             draw.text(
                 (
@@ -233,14 +233,14 @@ class InkyWeather:
                 ),
                 f'{forecast_data["precip"][0]}%',
                 font=font16,
-                fill=(0, 0, 0, 255),
+                fill=self.inky_display.BLACK,
             )
 
             out = Image.alpha_composite(im1, txt)
             # if MOCK is True:
-            out.show()
-            # inky_display.set_image(out)
-            # inky_display.show()
+            # out.show()
+            self.inky_display.set_image(out)
+            self.inky_display.show()
 
     def run(self):
         """Loop logic:
