@@ -1,14 +1,12 @@
 # Inky wHAT weather display
 
-_Current status: pulls weather and astronomical info from the APIs and generates an image; does not write to the Inky wHat yet._
-
-A weather data display for the Inky wHat e-paper display.
+A weather data display for the Inky wHAT e-paper display.
 
 - Pulls live weather data from the Ambient Weather API
 - Pulls moon phase and sunrise/sunset from the Visual Crossing API
 - Pulls forecast data from the National Weather Service API
 
-![Example image](images/example.jpg "Example image")
+![Example image](images/live_example.jpeg "Example image")
 
 ## How To
 
@@ -16,15 +14,17 @@ You'll need API keys and such from the API providers.
 
 Get the NWS API URL by sending a GET request to https://api.weather.gov/points/LAT,LONG where LAT and LONG are your latitude and longitude separated by a comma. In the resulting payload, you'll find the station ID (3 letter code) and the grid x/y to use.
 
-On the Raspberry Pi on which the Inky wHat is installed:
+Information on setting up and testing your Inky wHAT is at https://learn.pimoroni.com/article/getting-started-with-inky-what
 
-1. git clone https://github.com/pimoroni/inky
-2. git clone https://github.com/skypanther/inkywhat.git
-3. cd ./inkywhat
+On the Raspberry Pi on which the Inky wHAT is installed, in your home directory:
+
+1. `git clone https://github.com/pimoroni/inky`
+2. `git clone https://github.com/skypanther/inkywhat.git`
+3. `cd ./inkywhat`
 4. Create a virtual environment with `python3 -m venv venv`
 5. Activate it with `source venv/bin/activate`
-6. cd `../inky`
-7. `./install.sh`
+6. `cd ../inky`
+7. `./install.sh` and when prompted, do not create a virtual environment; do install the example files.
 8. Reboot when done
 9. Use `sudo raspi-config` to enable both SPI and I2C. The installer is supposed to do this but didn't on my system.
 10. `source inkywhat/venv/bin/activate`
@@ -33,17 +33,17 @@ On the Raspberry Pi on which the Inky wHat is installed:
 13. `sudo apt-get install libopenblas-dev`
 14. `cd inky`
 15. `pip install -r requirements-examples.txt`
-16. Run an Inky wHat sample to be sure your display is working as you expect
+16. Run an Inky wHAT sample to be sure your display is working as you expect.
 17. `cd ~/inkywhat`
 18. Install the required Python dependencies with `pip install -r requirements.txt`
 19. Rename config_sample.py to config.py
 20. In the Weather.gov section, enter your station ID, grid x/y, your email address, and your application's name.
-21. In the Visual Crossing section, enter your city name and two-letter state, and your API key
+21. In the Visual Crossing section, enter your city name and two-letter state, and your API key.
 22. In the Ambient Weather section, enter your station's MAC address, your API key, and your application key.
 23. Save the file.
 24. Run `python main.py`
 
-The frequency of API requests is also configurable. The default values are chosen a) to reflect that the Inky wHat display takes many seconds to refresh and has a limited lifespan of refreshes, b) to be nice to the API providers, and c) to pull data at a rate reasonable to how often it changes. For example, the moon phase will not change significantly over short periods of time. So, the default Visual Crossing API calls are every 2 hours. Likewise, forecast data doesn't change too frequently, so that's fetched every 10 mins. Current conditions change by the second. However, remember the e-ink display can't refresh quickly. So, the default is every minute.
+The frequency of API requests is also configurable. However, the default values are chosen a) to reflect that the Inky wHAT display takes many seconds to refresh and has a limited lifespan of refreshes, b) to be nice to the API providers, and c) to pull data at a rate reasonable to how often it changes. For example, the moon phase will not change significantly over short periods of time. So, the default Visual Crossing API calls are every 2 hours. Likewise, forecast data doesn't change too frequently, so that's fetched every 10 mins. Current conditions change by the second. However, remember the e-ink display can't refresh quickly. So, the default is every 2 minutes.
 
 ### Weather icons
 

@@ -91,7 +91,7 @@ class InkyWeather:
                 "windspeedmph": 10,
                 "windgustmph": 15,
                 "dailyrainin": 0.005,
-                "feelsLike": 45,
+                "feelsLike": 85,
             }
             return
         try:
