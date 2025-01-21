@@ -11,7 +11,7 @@ from PIL import Image, ImageFont, ImageDraw
 from moonphases import get_moon_phase_image
 from url_helper import UrlHelper
 
-MOCK = True
+MOCK = False
 
 
 class InkyWeather:
