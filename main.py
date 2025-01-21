@@ -143,8 +143,8 @@ class InkyWeather:
         font16 = ImageFont.truetype("font/inisans.otf", 16)
         font30 = ImageFont.truetype("font/inisans.otf", 30)
         font48 = ImageFont.truetype("font/inisans.otf", 48)
-        black = self.inky_display.BLACK
-        red = self.inky_display.RED
+        black = (0, 0, 0)
+        red = (255, 0, 0)
 
         with Image.open("images/weather_background.png") as im:
             im1 = im.convert("RGBA")
@@ -163,7 +163,7 @@ class InkyWeather:
                 (current_conditions["rain"][1], current_conditions["rain"][2]),
                 f'{current_conditions["rain"][0]} in',
                 font=font30,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
             draw.text(
                 (
@@ -172,7 +172,7 @@ class InkyWeather:
                 ),
                 f'{current_conditions["windspeed"][0]} mph',
                 font=font16,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
             draw.text(
                 (
@@ -181,7 +181,7 @@ class InkyWeather:
                 ),
                 f'{current_conditions["gust"][0]} mph gust',
                 font=font16,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
             draw.text(
                 (
@@ -190,7 +190,7 @@ class InkyWeather:
                 ),
                 f'{astro_data["sunrise"][0]}',
                 font=font16,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
             draw.text(
                 (
@@ -199,15 +199,15 @@ class InkyWeather:
                 ),
                 f'{astro_data["sunset"][0]}',
                 font=font16,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
             # moonphase is an image rather than text
             phase_img = get_moon_phase_image(astro_data["moonphase"][0])
             offset = (astro_data["moonphase"][1], astro_data["moonphase"][2])
             im1.paste(phase_img, offset)
-            high_color = self.inky_display.BLACK
+            high_color = (0, 0, 0)
             if forecast_data["high"][0] > 79:
-                high_color = self.inky_display.RED
+                high_color = (255, 0, 0)
             draw.text(
                 (
                     forecast_data["high"][1],
@@ -224,7 +224,7 @@ class InkyWeather:
                 ),
                 f'{forecast_data["wind"][0]}',
                 font=font16,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
             draw.text(
                 (
@@ -233,7 +233,7 @@ class InkyWeather:
                 ),
                 f'{forecast_data["precip"][0]}%',
                 font=font16,
-                fill=self.inky_display.BLACK,
+                fill=(0, 0, 0),
             )
 
             out = Image.alpha_composite(im1, txt)

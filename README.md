@@ -18,15 +18,30 @@ Get the NWS API URL by sending a GET request to https://api.weather.gov/points/L
 
 On the Raspberry Pi on which the Inky wHat is installed:
 
-1. Rename config_sample.py to config.py
-2. In the Weather.gov section, enter your station ID, grid x/y, your email address, and your application's name.
-3. In the Visual Crossing section, enter your city name and two-letter state, and your API key
-4. In the Ambient Weather section, enter your station's MAC address, your API key, and your application key.
-5. Save the file.
-6. Create a virtual environment with `python3 -m venv venv`
-7. Activate it with `source venv/bin/activate`
-8. Install the required Python dependencies with `pip install -r requirements.txt`
-9. Run `python main.py`
+1. git clone https://github.com/pimoroni/inky
+2. git clone https://github.com/skypanther/inkywhat.git
+3. cd ./inkywhat
+4. Create a virtual environment with `python3 -m venv venv`
+5. Activate it with `source venv/bin/activate`
+6. cd `../inky`
+7. `./install.sh`
+8. Reboot when done
+9. Use `sudo raspi-config` to enable both SPI and I2C. The installer is supposed to do this but didn't on my system.
+10. `source inkywhat/venv/bin/activate`
+11. `sudo apt-get install python3-dev`
+12. `sudo apt-get install libopenjp2-7`
+13. `sudo apt-get install libopenblas-dev`
+14. `cd inky`
+15. `pip install -r requirements-examples.txt`
+16. Run an Inky wHat sample to be sure your display is working as you expect
+17. `cd ~/inkywhat`
+18. Install the required Python dependencies with `pip install -r requirements.txt`
+19. Rename config_sample.py to config.py
+20. In the Weather.gov section, enter your station ID, grid x/y, your email address, and your application's name.
+21. In the Visual Crossing section, enter your city name and two-letter state, and your API key
+22. In the Ambient Weather section, enter your station's MAC address, your API key, and your application key.
+23. Save the file.
+24. Run `python main.py`
 
 The frequency of API requests is also configurable. The default values are chosen a) to reflect that the Inky wHat display takes many seconds to refresh and has a limited lifespan of refreshes, b) to be nice to the API providers, and c) to pull data at a rate reasonable to how often it changes. For example, the moon phase will not change significantly over short periods of time. So, the default Visual Crossing API calls are every 2 hours. Likewise, forecast data doesn't change too frequently, so that's fetched every 10 mins. Current conditions change by the second. However, remember the e-ink display can't refresh quickly. So, the default is every minute.
 
@@ -37,4 +52,4 @@ This project uses the weather icons from https://erikflowers.github.io/weather-i
 ### License
 
 - This repo's code is licensed under the MIT license
-- The Weather Icons font is licensed under the SIL OFL 1.1
+- The Weather Icons and the IniSans fonts are licensed under the SIL OFL 1.1
