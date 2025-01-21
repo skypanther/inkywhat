@@ -11,7 +11,7 @@ from PIL import Image, ImageFont, ImageDraw
 from moonphases import get_moon_phase_image
 from url_helper import UrlHelper
 
-MOCK = False
+MOCK = True
 
 
 class InkyWeather:
@@ -91,6 +91,7 @@ class InkyWeather:
                 "windspeedmph": 10,
                 "windgustmph": 15,
                 "dailyrainin": 0.005,
+                "feelsLike": 45,
             }
             return
         try:
@@ -113,10 +114,11 @@ class InkyWeather:
     def parse_ambient_data(self, data):
         """Parse the API response and return select values"""
         return {
-            "temp": (data["tempf"], 80, 50),
+            "temp": (data["tempf"], 80, 40),
             "windspeed": (round(data["windspeedmph"], 1), 80, 220),
             "gust": (round(data["windgustmph"], 1), 80, 245),
             "rain": (data["dailyrainin"], 80, 145),
+            "feel": (data["feelsLike"], 80, 95),
         }
 
     def parse_astronomical_data(self, data):
@@ -160,10 +162,16 @@ class InkyWeather:
                 fill=temp_color,
             )
             draw.text(
+                (current_conditions["feel"][1], current_conditions["feel"][2]),
+                f'Feels like {current_conditions["feel"][0]}',
+                font=font16,
+                fill=black,
+            )
+            draw.text(
                 (current_conditions["rain"][1], current_conditions["rain"][2]),
                 f'{current_conditions["rain"][0]} in',
                 font=font30,
-                fill=(0, 0, 0),
+                fill=black,
             )
             draw.text(
                 (
@@ -172,7 +180,7 @@ class InkyWeather:
                 ),
                 f'{current_conditions["windspeed"][0]} mph',
                 font=font16,
-                fill=(0, 0, 0),
+                fill=black,
             )
             draw.text(
                 (
@@ -181,7 +189,7 @@ class InkyWeather:
                 ),
                 f'{current_conditions["gust"][0]} mph gust',
                 font=font16,
-                fill=(0, 0, 0),
+                fill=black,
             )
             draw.text(
                 (
@@ -190,7 +198,7 @@ class InkyWeather:
                 ),
                 f'{astro_data["sunrise"][0]}',
                 font=font16,
-                fill=(0, 0, 0),
+                fill=black,
             )
             draw.text(
                 (
@@ -199,15 +207,15 @@ class InkyWeather:
                 ),
                 f'{astro_data["sunset"][0]}',
                 font=font16,
-                fill=(0, 0, 0),
+                fill=black,
             )
             # moonphase is an image rather than text
             phase_img = get_moon_phase_image(astro_data["moonphase"][0])
             offset = (astro_data["moonphase"][1], astro_data["moonphase"][2])
             im1.paste(phase_img, offset)
-            high_color = (0, 0, 0)
+            high_color = black
             if forecast_data["high"][0] > 79:
-                high_color = (255, 0, 0)
+                high_color = red
             draw.text(
                 (
                     forecast_data["high"][1],
@@ -224,7 +232,7 @@ class InkyWeather:
                 ),
                 f'{forecast_data["wind"][0]}',
                 font=font16,
-                fill=(0, 0, 0),
+                fill=black,
             )
             draw.text(
                 (
@@ -233,12 +241,13 @@ class InkyWeather:
                 ),
                 f'{forecast_data["precip"][0]}%',
                 font=font16,
-                fill=(0, 0, 0),
+                fill=black,
             )
 
             out = Image.alpha_composite(im1, txt)
-            # if MOCK is True:
+            # for local testing, uncomment this line
             # out.show()
+            # and comment out these lines
             self.inky_display.set_image(out)
             self.inky_display.show()
 
