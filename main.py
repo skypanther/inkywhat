@@ -137,6 +137,22 @@ class InkyWeather:
             "wind": (data["windSpeed"], 300, 235),
         }
 
+    def is_equal(self, obj_a, obj_b):
+        # if both None or {} then equal
+        if str(type(obj_a)) != "<class 'dict'>" or str(type(obj_b)) != "<class 'dict'>":
+            print("obj_a or obj_b not a Dict", type(obj_a), type(obj_b))
+            return False
+        k_a = obj_a.keys()
+        k_b = obj_b.keys()
+        if len(k_a) != len(k_b):
+            return False
+        # if both have same keys with same values, then equal
+        has_equal_keys = True
+        for k in k_a:
+            if k not in k_b or obj_a[k] != obj_b[k]:
+                has_equal_keys = False
+        return has_equal_keys
+
     def update_display(self):
         current_conditions = self.parse_ambient_data(self.current_conditions)
         # print(current_conditions["temp"][0])
@@ -268,15 +284,21 @@ class InkyWeather:
                 self.astronomical_data_last_checked,
                 self.weather_config.vc_frequency_seconds,
             ):
+                old_sun_moon_data = self.astronomical_data
                 self.fetch_sun_moon_data()
-                should_update_display = True
+                if not self.is_equal(old_sun_moon_data, self.astronomical_data):
+                    print("astro data changed")
+                    should_update_display = True
             # Check to see if we should get new conditions data
             if self.should_get_current_conditions(
                 self.current_conditions_last_fetched,
                 self.weather_config.aw_frequency_seconds,
             ):
+                old_current_conditions = self.current_conditions
                 self.fetch_current_conditions_data()
-                should_update_display = True
+                if not self.is_equal(old_current_conditions, self.current_conditions):
+                    print("current conditions changed")
+                    should_update_display = True
             # Check to see if we should get new forecast data
             if self.should_get_current_conditions(
                 self.forecast_last_checked,
